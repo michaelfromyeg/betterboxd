@@ -260,7 +260,7 @@ async function fetchLetterboxdPageData(
   return { films, totalPages };
 }
 
-export async function addTmdbPosterUrls(films: Film[], apiKey?: string): Promise<void> {
+export async function addTmdbPosterUrls(films: Array<Pick<Film, "name" | "year" | "tmdbPosterUrl">>, apiKey?: string): Promise<void> {
   const TMDB_API_KEY = process.env.TMDB_API_KEY || apiKey;
 
   if (!TMDB_API_KEY) {
