@@ -1,16 +1,20 @@
-import puppeteer from "puppeteer";
+import chromium from "@sparticuz/chromium-min";
+import puppeteer from "puppeteer-core";
 
 export async function getHtmlContent(
   url: string,
   target?: string,
 ): Promise<string> {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ 
+    args: process.env.IS_LOCAL ? undefined : chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: process.env.IS_LOCAL ? "/bin/google-chrome" : await chromium.executablePath(
+      "https://github.com/Sparticuz/chromium/releases/download/v110.0.1/chromium-v110.0.1-pack.tar"
+    ),
+    headless: process.env.IS_LOCAL ? false : chromium.headless,
+    ignoreHTTPSErrors: true,
+  });
   const page = await browser.newPage();
-
-  await page.setViewport({ width: 1280, height: 800 });
-  await page.setUserAgent(
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-  );
 
   try {
     await page.goto(url, { waitUntil: "networkidle0" });
