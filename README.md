@@ -2,6 +2,8 @@
 
 A small `npm` package to help with fetching Letterboxd data, better. Intended to be used alongside the Letterboxd API, with an even simpler interface and no attempt at authentication.
 
+NOTE: uses `/bin/google-chrome` on local (i.e., assumes you're on something Linux-like), or `playwright-aws-lambda` in a deployed environment. So, this limits where you can deploy code that uses this package.
+
 ## Methods
 
 ### `fetchLetterboxdFilms(username: string, maxPages: number = 5): Promise<{ films: Film[]; totalPages: number; fetchedPages: number }>`

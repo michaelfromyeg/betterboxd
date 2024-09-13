@@ -1,23 +1,19 @@
-import chromium from "@sparticuz/chromium-min";
-import puppeteer from "puppeteer-core";
+import playwright from 'playwright-aws-lambda';
+import { Page } from 'playwright-core';
 
 export async function getHtmlContent(
   url: string,
   target?: string,
 ): Promise<string> {
-  const browser = await puppeteer.launch({ 
-    args: process.env.IS_LOCAL ? undefined : chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: process.env.IS_LOCAL ? "/bin/google-chrome" : await chromium.executablePath(
-      "https://github.com/Sparticuz/chromium/releases/download/v110.0.1/chromium-v110.0.1-pack.tar"
-    ),
-    headless: process.env.IS_LOCAL ? false : chromium.headless,
-    ignoreHTTPSErrors: true,
+  const browser = await playwright.launchChromium({
+    headless: true,
+    executablePath: process.env.IS_LOCAL ? "/bin/google-chrome" : undefined
   });
-  const page = await browser.newPage();
-
+  
   try {
-    await page.goto(url, { waitUntil: "networkidle0" });
+    const page = await browser.newPage();
+
+    await page.goto(url, { waitUntil: 'networkidle' });
 
     await autoScroll(page);
 
@@ -31,11 +27,13 @@ export async function getHtmlContent(
     console.error(`Error fetching HTML content: ${error}`);
     throw error;
   } finally {
-    await browser.close();
+    if (browser) {
+      await browser.close();
+    }
   }
 }
 
-async function autoScroll(page: puppeteer.Page) {
+async function autoScroll(page: Page) {
   await page.evaluate(async () => {
     await new Promise<void>((resolve) => {
       let totalHeight = 0;
@@ -43,11 +41,11 @@ async function autoScroll(page: puppeteer.Page) {
       const delay = 100;
 
       const timer = setInterval(() => {
-        const scrollHeight = document.body.scrollHeight;
         window.scrollBy(0, distance);
         totalHeight += distance;
 
-        // If we've scrolled to the bottom, resolve the promise
+        const scrollHeight = document.body.scrollHeight;
+
         if (totalHeight >= scrollHeight - window.innerHeight) {
           clearInterval(timer);
           resolve();
