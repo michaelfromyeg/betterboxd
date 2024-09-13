@@ -1,5 +1,6 @@
-import { formatFilm } from "./index.js";
-import { Film } from "./types.js";
+import { strict as assert } from 'assert';
+import { formatFilm } from "../src/index.js";
+import { Film } from "../src/types.js";
 
 describe("formatFilm", () => {
   it("should format the movie details correctly", () => {
@@ -12,6 +13,6 @@ describe("formatFilm", () => {
     };
 
     const result = formatFilm(film);
-    expect(result).toBe("Inception (2010) - Rating: 4.5/5");
+    assert.equal(result, "Inception (2010) - Rating: 4.5/5");
   });
 });
