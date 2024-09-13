@@ -17,6 +17,7 @@
     "dist/"
   ],
   "scripts": {
+    "postinstall": "npx playwright install",
     "build": "rm -rf dist/ && tsc && tsc-alias",
     "test": "npm run build && mocha --timeout 10000 \"dist/**/*.test.js\"",
     "lint": "eslint 'src/**/*.ts'",
