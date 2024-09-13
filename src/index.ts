@@ -1,8 +1,13 @@
 import * as cheerio from "cheerio";
-import dotenv from 'dotenv';
-import fetch from 'node-fetch';
+import dotenv from "dotenv";
+import fetch from "node-fetch";
 import { Film } from "./types.js";
-import { convertRatingToNumber, getHtmlContent, parseDateString, sleep } from "./utils.js";
+import {
+  convertRatingToNumber,
+  getHtmlContent,
+  parseDateString,
+  sleep,
+} from "./utils.js";
 
 dotenv.config();
 
@@ -10,7 +15,11 @@ export async function fetchLetterboxdFilms(
   username: string,
   maxPages: number = 5,
 ): Promise<{ films: Film[]; totalPages: number; fetchedPages: number }> {
-  return await fetchLetterboxdData(username, fetchLetterboxdFilmsByPage, maxPages);
+  return await fetchLetterboxdData(
+    username,
+    fetchLetterboxdFilmsByPage,
+    maxPages,
+  );
 }
 
 export async function fetchLetterboxdFilmsByPage(
@@ -54,7 +63,11 @@ export async function fetchLetterboxdDiary(
   username: string,
   maxPages: number = 5,
 ): Promise<{ films: Film[]; totalPages: number; fetchedPages: number }> {
-  return await fetchLetterboxdData(username, fetchLetterboxdDiaryEntriesByPage, maxPages);
+  return await fetchLetterboxdData(
+    username,
+    fetchLetterboxdDiaryEntriesByPage,
+    maxPages,
+  );
 }
 
 export async function fetchLetterboxdDiaryEntriesByPage(
@@ -107,7 +120,9 @@ export async function fetchLetterboxdDiaryEntriesByPage(
 
       const ratingTd = row.find("td.td-rating");
       const starsString = ratingTd.find("span.rating").text().trim();
-      const rating = starsString ? convertRatingToNumber(starsString) : undefined;
+      const rating = starsString
+        ? convertRatingToNumber(starsString)
+        : undefined;
 
       films.push({
         id: filmId || "",
@@ -128,7 +143,11 @@ export async function fetchLetterboxdReviews(
   username: string,
   maxPages: number = 5,
 ): Promise<{ films: Film[]; totalPages: number; fetchedPages: number }> {
-  return await fetchLetterboxdData(username, fetchLetterboxdReviewsByPage, maxPages);
+  return await fetchLetterboxdData(
+    username,
+    fetchLetterboxdReviewsByPage,
+    maxPages,
+  );
 }
 
 export async function fetchLetterboxdReviewsByPage(
@@ -179,7 +198,10 @@ export async function fetchLetterboxdReviewsByPage(
         if (nobrElement.length > 0) {
           datetime = parseDateString(nobrElement.text().trim());
         } else {
-          const dateTextWithoutAction = dateText.replace(/^(Added|Watched|Rewatched)\s*/, "");
+          const dateTextWithoutAction = dateText.replace(
+            /^(Added|Watched|Rewatched)\s*/,
+            "",
+          );
           datetime = parseDateString(dateTextWithoutAction.trim());
         }
       }
@@ -218,7 +240,10 @@ export async function fetchLetterboxdReviewsByPage(
  */
 async function fetchLetterboxdData(
   username: string,
-  pageFetcher: (username: string, page: number) => Promise<{ films: Film[]; totalPages: number }>,
+  pageFetcher: (
+    username: string,
+    page: number,
+  ) => Promise<{ films: Film[]; totalPages: number }>,
   maxPages: number = 5,
 ): Promise<{ films: Film[]; totalPages: number; fetchedPages: number }> {
   const { films: firstFilms, totalPages } = await pageFetcher(username, 1);
@@ -226,7 +251,10 @@ async function fetchLetterboxdData(
   let films = [...firstFilms];
   let fetchedPages = 1;
   while (fetchedPages < Math.min(totalPages, maxPages)) {
-    const { films: fetchedFilms } = await pageFetcher(username, fetchedPages + 1);
+    const { films: fetchedFilms } = await pageFetcher(
+      username,
+      fetchedPages + 1,
+    );
     films = [...films, ...fetchedFilms];
     fetchedPages++;
     await sleep(1_000);
@@ -260,27 +288,30 @@ async function fetchLetterboxdPageData(
   return { films, totalPages };
 }
 
-export async function addTmdbPosterUrls(films: Array<Pick<Film, "name" | "year" | "tmdbPosterUrl">>, apiKey?: string): Promise<void> {
+export async function addTmdbPosterUrls(
+  films: Array<Pick<Film, "name" | "year" | "tmdbPosterUrl">>,
+  apiKey?: string,
+): Promise<void> {
   const TMDB_API_KEY = process.env.TMDB_API_KEY || apiKey;
 
   if (!TMDB_API_KEY) {
-    throw new Error('TMDB_API_KEY is not set in the environment variables.');
+    throw new Error("TMDB_API_KEY is not set in the environment variables.");
   }
 
-  const TMDB_API_BASE_URL = 'https://api.themoviedb.org/3';
-  const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
-  const POSTER_SIZE = 'w500';
+  const TMDB_API_BASE_URL = "https://api.themoviedb.org/3";
+  const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
+  const POSTER_SIZE = "w500";
 
   for (const film of films) {
     try {
       const searchUrl = `${TMDB_API_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(
-        film.name
+        film.name,
       )}&year=${encodeURIComponent(film.year)}`;
       const response = await fetch(searchUrl);
 
       if (!response.ok) {
         console.error(
-          `Failed to fetch TMDB data for film: ${film.name} (status ${response.status})`
+          `Failed to fetch TMDB data for film: ${film.name} (status ${response.status})`,
         );
         continue;
       }
@@ -294,7 +325,7 @@ export async function addTmdbPosterUrls(films: Array<Pick<Film, "name" | "year" 
           (m: any) =>
             m.title.toLowerCase() === film.name.toLowerCase() &&
             m.release_date &&
-            m.release_date.startsWith(film.year)
+            m.release_date.startsWith(film.year),
         );
 
         const movie = exactMatch || data.results[0];
