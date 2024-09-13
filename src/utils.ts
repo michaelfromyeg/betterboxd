@@ -55,6 +55,29 @@ export function convertRatingToNumber(rating: string): number {
   return fullStars + (hasHalfStar ? 0.5 : 0);
 }
 
+export function parseDateString(dateString: string): Date | undefined {
+  const date = new Date(dateString);
+  if (!isNaN(date.getTime())) {
+    return date;
+  }
+
+  // If dateString is like "12 September 2024", convert it
+  const regex = /(\d+)\s+(\w+)\s+(\d{4})/;
+  const match = dateString.match(regex);
+  if (match) {
+    const day = parseInt(match[1], 10);
+    const monthName = match[2];
+    const year = parseInt(match[3], 10);
+    const month = new Date(`${monthName} 1, ${year}`).getMonth();
+    const parsedDate = new Date(year, month, day);
+    if (!isNaN(parsedDate.getTime())) {
+      return parsedDate;
+    }
+  }
+
+  return undefined;
+}
+
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -1,15 +1,15 @@
-import { formatFilm, fetchLetterboxdReviews } from '../dist/index.js';
-
-const myMovie = {
-  name: 'Inception',
-  year: "2010",
-  rating: 4.5
-};
-
-console.log(formatFilm(myMovie));
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { addTmdbPosterUrls, fetchLetterboxdDiary } from "../dist/src/index.js";
 
 (async () => {
-  const { films, totalPages } = await fetchLetterboxdReviews('michaelfromyeg');
+  console.log("Betterboxd dev script...");
+
+  const { films, totalPages } = await fetchLetterboxdDiary("michaelfromyeg");
+
+  await addTmdbPosterUrls(films);
+
   console.log(films);
   console.log(`Total pages: ${totalPages}`);
+
+  console.log("Done!");
 })();

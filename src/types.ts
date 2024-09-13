@@ -7,8 +7,10 @@ export interface Film {
 
   // TODO(michaelfromyeg): break into separate type?
   // if a film is reviewed, it also has reviewText and a datetime
-  datetime?: string;
+  datetime?: Date;
   action?: string; // one-of added, watched, re-watched
   reviewText?: string;
   likesCount?: number;
+
+  tmdbPosterUrl?: string;
 }
