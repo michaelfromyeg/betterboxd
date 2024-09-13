@@ -17,7 +17,7 @@
     "dist/"
   ],
   "scripts": {
-    "postinstall": "npx playwright install",
+    "postinstall": "npx playwright install chromium",
     "build": "rm -rf dist/ && tsc && tsc-alias",
     "test": "npm run build && mocha --timeout 10000 \"dist/**/*.test.js\"",
     "lint": "eslint 'src/**/*.ts'",
