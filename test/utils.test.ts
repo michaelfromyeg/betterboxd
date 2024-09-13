@@ -25,5 +25,15 @@ describe("getHtmlContent", () => {
   it('should fetch HTML content', async () => {
     const html = await getHtmlContent('https://example.com');
     assert.equal(html.includes("<!DOCTYPE html>"), true)
-  });  
+  });
+
+  it('should fetch HTML content from Letterboxd', async () => {
+    const html = await getHtmlContent('https://letterboxd.com/michaelfromyeg/films');
+    assert.equal(html.includes("<!DOCTYPE html>"), true)
+  });
+
+  it('should fetch HTML content from Letterboxd with a target', async () => {
+    const html = await getHtmlContent('https://letterboxd.com/michaelfromyeg/films', "ul.poster-list");
+    assert.equal(html.includes("<!DOCTYPE html>"), true)
+  });
 })

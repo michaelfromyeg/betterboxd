@@ -47,7 +47,7 @@ export async function fetchLetterboxdFilmsByPage(
     return films;
   };
 
-  return await fetchLetterboxdPageData(url, parseFilms, "ul.poster-list li.film-detail");
+  return await fetchLetterboxdPageData(url, parseFilms, "ul.poster-list");
 }
 
 export async function fetchLetterboxdDiary(
@@ -210,7 +210,7 @@ export async function fetchLetterboxdReviewsByPage(
     return films;
   };
 
-  return await fetchLetterboxdPageData(url, parseFilms, "ul.poster-list li.film-detail");
+  return await fetchLetterboxdPageData(url, parseFilms, "ul.poster-list");
 }
 
 /**
@@ -243,6 +243,8 @@ async function fetchLetterboxdPageData(
   parseFilms: ($: cheerio.CheerioAPI) => Film[],
   contentSelector?: string,
 ): Promise<{ films: Film[]; totalPages: number }> {
+  console.log("Fetching Letterboxd page:", url);
+
   let html = "";
   try {
     html = await getHtmlContent(url, contentSelector);

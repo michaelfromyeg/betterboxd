@@ -4,16 +4,19 @@ export async function getHtmlContent(
   url: string,
   target?: string,
 ): Promise<string> {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
+  await page.setViewport({ width: 1280, height: 800 });
+  await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+
   try {
-    await page.goto(url, { waitUntil: "networkidle2" });
+    await page.goto(url, { waitUntil: "networkidle0" });
 
     await autoScroll(page);
 
     if (target) {
-      await page.waitForSelector(target, { timeout: 5000 });
+      await page.waitForSelector(target, { timeout: 10_000 });
     }
 
     const html = await page.content();
