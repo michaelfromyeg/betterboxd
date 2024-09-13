@@ -13,7 +13,10 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": false
   },
   "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules"]
