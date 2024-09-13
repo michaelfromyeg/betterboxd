@@ -8,6 +8,9 @@
   "license": "MIT",
   "version": "1.5.0",
   "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
@@ -41,7 +44,6 @@
   "dependencies": {
     "cheerio": "^1.0.0",
     "dotenv": "^16.4.5",
-    "lru-cache": "^11.0.1",
     "lru-cache-fs": "^2.0.1",
     "node-fetch": "^3.3.2",
     "playwright-aws-lambda": "^0.11.0",
