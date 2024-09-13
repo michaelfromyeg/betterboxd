@@ -1,5 +1,5 @@
-import playwright from 'playwright-aws-lambda';
-import { Page } from 'playwright-core';
+import playwright from "playwright-aws-lambda";
+import { Page } from "playwright-core";
 
 export async function getHtmlContent(
   url: string,
@@ -7,13 +7,13 @@ export async function getHtmlContent(
 ): Promise<string> {
   const browser = await playwright.launchChromium({
     headless: true,
-    executablePath: process.env.IS_LOCAL ? "/bin/google-chrome" : undefined
+    executablePath: process.env.IS_LOCAL ? "/bin/google-chrome" : undefined,
   });
-  
+
   try {
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: 'networkidle' });
+    await page.goto(url, { waitUntil: "networkidle" });
 
     await autoScroll(page);
 
