@@ -17,17 +17,17 @@
     "dist/"
   ],
   "scripts": {
-    "postinstall": "npx playwright install chromium",
-    "build": "rm -rf dist/ && tsc && tsc-alias",
+    "dev": "npm run build && node scripts/dev.js",
+    "build": "rm -rf dist/ && tsc",
     "test": "npm run build && mocha --timeout 10000 \"dist/**/*.test.js\"",
     "lint": "eslint 'src/**/*.ts'",
-    "format": "prettier --write 'src/**/*.ts'",
-    "dev": "npm run build && node scripts/dev.js"
+    "format": "prettier --write 'src/**/*.ts'"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@eslint/js": "^9.10.0",
+    "@sparticuz/chromium": "^119.0.0",
     "@types/chai": "^4.3.19",
     "@types/jest": "^29.5.13",
     "@types/node": "^22.5.4",
@@ -47,7 +47,6 @@
     "dotenv": "^16.4.5",
     "lru-cache-fs": "^2.0.1",
     "node-fetch": "^3.3.2",
-    "playwright-aws-lambda": "^0.11.0",
-    "playwright-core": "^1.47.1"
+    "puppeteer-core": "^21.5.1"
   }
 }

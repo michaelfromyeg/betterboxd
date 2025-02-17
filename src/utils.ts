@@ -1,19 +1,25 @@
-import playwright from "playwright-aws-lambda";
-import { Page } from "playwright-core";
+import chromium from '@sparticuz/chromium';
+import puppeteer from 'puppeteer-core';
 
 export async function getHtmlContent(
   url: string,
   target?: string,
 ): Promise<string> {
-  const browser = await playwright.launchChromium({
-    headless: true,
-    executablePath: process.env.IS_LOCAL ? "/bin/google-chrome" : undefined,
-  });
+  const settings = {
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: process.env.IS_LOCAL ? "/bin/google-chrome" : await chromium.executablePath(),
+    headless: process.env.IS_LOCAL ? true : chromium.headless,
+    ignoreHTTPSErrors: true,
+  };
+  console.log("Puppeteer settings", settings);
+  
+  const browser = await puppeteer.launch(settings);
 
   try {
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle" });
+    await page.goto(url, { waitUntil: "networkidle0" });
 
     await autoScroll(page);
 
@@ -33,7 +39,8 @@ export async function getHtmlContent(
   }
 }
 
-async function autoScroll(page: Page) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function autoScroll(page: any): Promise<void> {
   await page.evaluate(async () => {
     await new Promise<void>((resolve) => {
       let totalHeight = 0;
